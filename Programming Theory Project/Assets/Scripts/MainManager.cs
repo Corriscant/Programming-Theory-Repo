@@ -1,31 +1,44 @@
 using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 // Base class of figures present in scene
-public abstract class Figure : MonoBehaviour
+public abstract class FigureComponent : MonoBehaviour
 {
+    private UnityEngine.Color m_color;
+    // color of the figure as property
+    public UnityEngine.Color color
+    {
+        get { return m_color; }
+        protected set
+        {
+            m_color = value;
+        }
+    }
+
     // check if the string is the name of the figure
     protected abstract bool IsCodeNameTheSame(string str);
     public void SetColor(string aName)
     {
         if (IsCodeNameTheSame(aName))
         {
-            GetComponent<Renderer>().material.color = Color.red;
+            gameObject.GetComponent<Renderer>().material.color = color;
         }
     }
 
-    public void TestName(string aName)
+    // Initialization
+    public virtual void Initialization()
     {
-        Debug.Log("Yes, I am " + aName);
+        color = UnityEngine.Color.black;
     }
 }
 
 // Child class of Figure - Box
-public class Box : Figure
+public class BoxComponent : FigureComponent
 {
     protected override bool IsCodeNameTheSame(string str)
     {
@@ -36,10 +49,17 @@ public class Box : Figure
         }
         return result;
     }
+
+    // Initialization
+    public override void Initialization()
+    {
+        base.Initialization();
+        color = UnityEngine.Color.green;
+    }
 }
 
 // Child class of Figure - Sphere
-public class Sphere : Figure
+public class SphereComponent : FigureComponent
 {
     protected override bool IsCodeNameTheSame(string str)
     {
@@ -50,10 +70,17 @@ public class Sphere : Figure
         }
         return result;
     }
+
+    // Initialization
+    public override void Initialization()
+    {
+        base.Initialization();
+        color = UnityEngine.Color.yellow;
+    }
 }
 
 // Child class of Figure - Capsule
-public class Capsule : Figure
+public class CapsuleComponent : FigureComponent
 {
     protected override bool IsCodeNameTheSame(string str)
     {
@@ -63,6 +90,13 @@ public class Capsule : Figure
             Debug.Log("Yes, I am Capsule");
         }
         return result;
+    }
+
+    // Initialization
+    public override void Initialization()
+    {
+        base.Initialization();
+        color = UnityEngine.Color.red;
     }
 }
 
@@ -75,7 +109,27 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inputField.text = "Hello World!";
+        // search scene for all objects with given names and add components to them
+        foreach (GameObject obj in GameObject.FindObjectsOfType<GameObject>())
+        {
+            switch (obj.name)
+            {
+                case "Box":
+                    obj.AddComponent<BoxComponent>().Initialization();
+                    break;
+                case "Sphere":
+                    obj.AddComponent<SphereComponent>().Initialization();
+                    break;
+                case "Capsule":
+                    obj.AddComponent<CapsuleComponent>().Initialization();
+                    break;
+                    //   default:
+                    //       Debug.Log("No matching component found for this GameObject");
+                    //       break;
+            }
+
+        }
+
     }
 
     // Update is called once per frame
@@ -90,11 +144,16 @@ public class MainManager : MonoBehaviour
         Debug.Log("OnEndEdit: " + inputField.text);
 
         // cycle through all objects in the scene. If name of the object is the same as the text in the InputField, then change color of this object to red
-        foreach (Figure obj in GameObject.FindObjectsOfType<Figure>())
+        foreach (GameObject obj in GameObject.FindObjectsOfType<GameObject>())
         {
-            Debug.Log("SetColorCall for : " + obj.name);
-            obj.SetColor(inputField.text);
-            obj.TestName(obj.name);
+            FigureComponent figure = obj.GetComponent<FigureComponent>();
+            if (figure != null)
+            {
+                // Usinng overriden method
+                figure.SetColor(inputField.text);
+                // Using public color property with get
+                Debug.Log("Color changed: " + figure.color);
+            }
         }
     }
 }
