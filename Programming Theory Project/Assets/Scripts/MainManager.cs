@@ -1,4 +1,3 @@
-using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,10 +5,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Base class of figures present in scene
+// Base class of figures present in scene   // ABSTRACTION 
 public abstract class FigureComponent : MonoBehaviour
 {
+    // ABSTRACTION 
     private UnityEngine.Color m_color;
+    // ENCAPSULATION
     // color of the figure as property
     public UnityEngine.Color color
     {
@@ -37,9 +38,10 @@ public abstract class FigureComponent : MonoBehaviour
     }
 }
 
-// Child class of Figure - Box
+// Child class of Figure - Box   // INHERITANCE
 public class BoxComponent : FigureComponent
 {
+    // POLYMORPHISM
     protected override bool IsCodeNameTheSame(string str)
     {
         bool result = (str == "Box");
@@ -50,6 +52,7 @@ public class BoxComponent : FigureComponent
         return result;
     }
 
+    // POLYMORPHISM
     // Initialization
     public override void Initialization()
     {
@@ -58,9 +61,10 @@ public class BoxComponent : FigureComponent
     }
 }
 
-// Child class of Figure - Sphere
+// Child class of Figure - Sphere  // INHERITANCE
 public class SphereComponent : FigureComponent
 {
+    // POLYMORPHISM
     protected override bool IsCodeNameTheSame(string str)
     {
         bool result = (str == "Sphere");
@@ -71,6 +75,7 @@ public class SphereComponent : FigureComponent
         return result;
     }
 
+    // POLYMORPHISM
     // Initialization
     public override void Initialization()
     {
@@ -79,9 +84,10 @@ public class SphereComponent : FigureComponent
     }
 }
 
-// Child class of Figure - Capsule
+// Child class of Figure - Capsule  // INHERITANCE
 public class CapsuleComponent : FigureComponent
 {
+    // POLYMORPHISM
     protected override bool IsCodeNameTheSame(string str)
     {
         bool result = (str == "Capsule");
@@ -92,6 +98,7 @@ public class CapsuleComponent : FigureComponent
         return result;
     }
 
+    // POLYMORPHISM
     // Initialization
     public override void Initialization()
     {
